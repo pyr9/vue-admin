@@ -62,8 +62,8 @@ export default defineConfig(({mode}: ConfigEnv): UserConfig => {
         //启动服务配置
         server: {
             // 服务器主机名，如果允许外部访问，可设置为 "0.0.0.0" 也可设置成你的ip地址
-            host: '0.0.0.0',
-            port: 8080,
+            host: true,
+            port: 9099,
             open: true,
             https: false,
             cors: true,

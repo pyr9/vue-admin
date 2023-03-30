@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia'
+import {login, logout} from "@/api/user";
 
 
 export const useUserStore = defineStore({
@@ -21,10 +22,12 @@ export const useUserStore = defineStore({
         login(userInfo) {
             const {username, password} = userInfo
             return new Promise(async (resolve, reject) => {
-                this.token = username
-                this.userInfo = userInfo
+                login({username: username.trim(), password: password}).then(response => {
+                    console.log('login response', response)
+                    this.token = response
+                    resolve(username)
+                })
                 await this.getRoles()
-                resolve(username)
             })
         },
         // 获取用户授权角色信息，实际应用中 可以通过token通过请求接口在这里获取用户信息
@@ -36,6 +39,8 @@ export const useUserStore = defineStore({
                 resolve(this.roles)
             })
         },
+
+
         // 获取用户信息 ，如实际应用中 可以通过token通过请求接口在这里获取用户信息
         getInfo(roles) {
             return new Promise((resolve, reject) => {
@@ -43,13 +48,18 @@ export const useUserStore = defineStore({
                 resolve(roles)
             })
         },
+
         // 退出
         logout() {
             return new Promise((resolve, reject) => {
-                this.token = null
-                this.userInfo = {}
-                this.roles = []
-                resolve(null)
+                logout().then(() => {
+                    this.token = null
+                    this.userInfo = {}
+                    this.roles = []
+                    resolve(null)
+                }).catch(error => {
+                    reject(error)
+                })
             })
         },
 
